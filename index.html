@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neon Strike 3D</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="hud">
+      <div class="hud-top">
+        <div>
+          <div class="title">Neon Strike 3D</div>
+          <div class="subtitle">Arena update</div>
+        </div>
+        <div class="hud-actions">
+          <button id="settingsButton" class="icon-button" type="button" aria-label="Configuracoes">⚙</button>
+        </div>
+      </div>
+      <div class="stats">
+        <span>Pontos: <strong id="score">0</strong></span>
+        <span>Moedas: <strong id="coins">0</strong></span>
+        <span>Vida: <strong id="health">100</strong></span>
+        <span>Inimigos: <strong id="enemyCount">0</strong></span>
+        <span>Mundo: <strong id="world">1</strong></span>
+        <span>Fase: <strong id="level">1</strong></span>
+        <span>Bombas: <strong id="bombsCount">2</strong></span>
+        <span>Baus: <strong id="chestsOpened">0</strong></span>
+        <span>Pocao: <strong id="potionStatus">Nenhuma</strong></span>
+      </div>
+      <div class="help">WASD mover | Mouse mirar | T atirar | Espaco pular | 1-7 armas | E bomba | R reiniciar</div>
+    </div>
+
+    <div id="crosshair" aria-hidden="true"></div>
+    <div id="neonVignette" aria-hidden="true"></div>
+    <div id="muzzleFlash" aria-hidden="true"></div>
+    <div id="hitFlash" aria-hidden="true"></div>
+    <div id="scanlines" aria-hidden="true"></div>
+    <div id="hudGlowFrame" aria-hidden="true"></div>
+    <div id="speedLines" aria-hidden="true"></div>
+    <div id="lowHealthPulse" aria-hidden="true"></div>
+    <div id="energyBloom" aria-hidden="true"></div>
+    <div id="rewardToast" class="hidden" aria-live="polite"></div>
+    <div id="bossBar" class="boss-bar hidden" aria-hidden="true">
+      <div class="boss-bar-top">
+        <strong>Chefao Neon</strong>
+        <span id="bossHealthText">100/100</span>
+      </div>
+      <div class="boss-bar-track"><div id="bossHealthFill"></div></div>
+    </div>
+
+    <div id="settingsPanel" class="modal hidden">
+      <div class="settings-card">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow">Loadout</p>
+            <h2>Configuracoes</h2>
+          </div>
+          <button id="closeSettings" class="icon-button" type="button">X</button>
+        </div>
+        <p class="muted">Escolha sua arma, ajuste a mira e deixe a arena do seu jeito.</p>
+
+        <div class="weapon-grid">
+          <button class="weapon-card active" data-weapon="pistol" type="button">
+            <strong>Pistol</strong>
+            <span>Gratis. Balanceada e precisa.</span>
+            <em>Selecionado</em>
+          </button>
+          <button class="weapon-card" data-weapon="smg" type="button">
+            <strong>Metralhadora</strong>
+            <span>Gratis. Rapida, perfeita para segurar espaco.</span>
+            <em>Liberado</em>
+          </button>
+          <button class="weapon-card" data-weapon="ak" type="button">
+            <strong>AK-47</strong>
+            <span>Gratis. Forte, com recoil pesado.</span>
+            <em>Liberado</em>
+          </button>
+          <button class="weapon-card" data-weapon="knife" type="button">
+            <strong>Faca</strong>
+            <span>Gratis. Curta distancia, muito ponto.</span>
+            <em>Liberado</em>
+          </button>
+          <button class="weapon-card locked" data-weapon="shotgun" type="button">
+            <strong>Shotgun</strong>
+            <span>Dispara varios tiros de perto.</span>
+            <em>45 moedas</em>
+          </button>
+          <button class="weapon-card locked" data-weapon="laser" type="button">
+            <strong>Laser Rifle</strong>
+            <span>Raio neon rapido, preciso e forte.</span>
+            <em>90 moedas</em>
+          </button>
+          <button class="weapon-card locked" data-weapon="plasma" type="button">
+            <strong>Plasma Cannon</strong>
+            <span>Tiro pesado para mundos avancados.</span>
+            <em>140 moedas</em>
+          </button>
+        </div>
+
+        <label class="setting-row">
+          <span>Sensibilidade</span>
+          <input id="sensitivityRange" type="range" min="0.8" max="2.4" step="0.1" value="1.2" />
+        </label>
+        <label class="setting-row">
+          <span>Campanha</span>
+          <input id="enemyLimitRange" type="range" min="5" max="5" step="1" value="5" disabled />
+        </label>
+        <label class="setting-row toggle-row">
+          <span>Brilho neon</span>
+          <input id="glowToggle" type="checkbox" checked />
+        </label>
+        <label class="setting-row toggle-row">
+          <span>Som e musica</span>
+          <input id="soundToggle" type="checkbox" checked />
+        </label>
+      </div>
+    </div>
+
+    <div id="petsPanel" class="modal hidden">
+      <div class="settings-card tutorial-card">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow">Pet shop</p>
+            <h2>Pets melhores</h2>
+          </div>
+          <button id="closePets" class="icon-button" type="button">X</button>
+        </div>
+        <p class="muted">Ganhe moedas derrotando inimigos. Normal: +2 moedas. Chefao: +25 moedas. Compre pets e armas melhores.</p>
+        <h3 class="shop-title">Pets</h3>
+        <div class="pet-grid">
+          <button class="pet-card active" data-pet="basic" type="button">
+            <strong>Drone Basic</strong>
+            <span>Gratis. Atira devagar e ajuda no comeco.</span>
+            <em>0 moedas</em>
+          </button>
+          <button class="pet-card" data-pet="spark" type="button">
+            <strong>Spark Pet</strong>
+            <span>Atira mais rapido e causa mais dano.</span>
+            <em>30 moedas</em>
+          </button>
+          <button class="pet-card" data-pet="titan" type="button">
+            <strong>Titan Pet</strong>
+            <span>Pet forte para mundos dificeis.</span>
+            <em>75 moedas</em>
+          </button>
+          <button class="pet-card" data-pet="ghost" type="button">
+            <strong>Ghost Pet</strong>
+            <span>Atira muito rapido com dano medio.</span>
+            <em>120 moedas</em>
+          </button>
+          <button class="pet-card" data-pet="dragon" type="button">
+            <strong>Dragon Pet</strong>
+            <span>O pet mais forte, feito para chefao.</span>
+            <em>200 moedas</em>
+          </button>
+        </div>
+        <h3 class="shop-title">Armas</h3>
+        <div class="pet-grid weapon-shop-grid">
+          <button class="pet-card weapon-shop-card" data-weapon="shotgun" type="button">
+            <strong>Shotgun</strong>
+            <span>Otima de perto, dispara 6 pellets.</span>
+            <em>45 moedas</em>
+          </button>
+          <button class="pet-card weapon-shop-card" data-weapon="laser" type="button">
+            <strong>Laser Rifle</strong>
+            <span>Laser neon automatico, preciso e rapido.</span>
+            <em>90 moedas</em>
+          </button>
+          <button class="pet-card weapon-shop-card" data-weapon="plasma" type="button">
+            <strong>Plasma Cannon</strong>
+            <span>Tiro pesado e forte contra chefao.</span>
+            <em>140 moedas</em>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tutorialPanel" class="modal hidden">
+      <div class="settings-card tutorial-card">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow">Como jogar</p>
+            <h2>Tutorial</h2>
+          </div>
+          <button id="closeTutorial" class="icon-button" type="button">X</button>
+        </div>
+        <div class="tutorial-grid">
+          <div><strong>Movimento</strong><span>Use WASD para andar, Espaco para pular e o mouse para mirar.</span></div>
+          <div><strong>Atirar</strong><span>Aperte ou segure T para atirar. Use 1-7 para trocar de arma comprada.</span></div>
+          <div><strong>Bombas</strong><span>Aperte E para jogar uma bomba. Ela explode depois de alguns segundos.</span></div>
+          <div><strong>Pocoes</strong><span>Garrafas neon aparecem na arena: cura, velocidade, escudo e furia.</span></div>
+          <div><strong>Pet</strong><span>Seu drone segue voce e atira automaticamente no inimigo mais perto.</span></div>
+          <div><strong>Fases e mundos</strong><span>Agora sao 8 fases por mundo. Mundo 2 e 3 mudam a arena e trazem inimigos diferentes.</span></div>
+          <div><strong>Chefao</strong><span>Ele fica parado no centro com barra de vida. Tem 100 de vida, suas armas causam 2 de dano e ele tira 3 de vida a cada 5 segundos.</span></div>
+          <div><strong>Moedas</strong><span>Inimigo normal da +2 moedas. Chefao da +25 moedas. Use moedas para comprar pets e armas como Laser Rifle.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="multiplayerPanel" class="modal hidden">
+      <div class="settings-card tutorial-card">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow">Online beta</p>
+            <h2>Multiplayer Online</h2>
+          </div>
+          <button id="closeMultiplayer" class="icon-button" type="button">X</button>
+        </div>
+        <p class="muted">
+          Modo online simples em teste. Ele ja conecta jogadores pelo servidor do site e prepara a base para sincronizar players.
+        </p>
+        <div class="tutorial-grid">
+          <div><strong>1. Abrir servidor</strong><span>Rode node server.js dentro da pasta shooting-3d.</span></div>
+          <div><strong>2. Entrar no site</strong><span>Abra http://localhost:3000 no navegador.</span></div>
+          <div><strong>3. Mesmo Wi-Fi</strong><span>Seu amigo pode entrar usando o IP do seu PC com :3000.</span></div>
+          <div><strong>Status</strong><span id="multiplayerStatus">Aguardando conexao...</span></div>
+        </div>
+        <label class="nickname-field">
+          <span>Seu apelido</span>
+          <input id="playerNickname" maxlength="16" value="davi" placeholder="davi" />
+        </label>
+        <button id="connectMultiplayer" type="button">Conectar Online</button>
+      </div>
+    </div>
+
+    <div id="startScreen">
+      <div class="panel main-menu">
+        <div class="game-logo" aria-hidden="true">
+          <div class="logo-mark">NS</div>
+          <div class="logo-glow"></div>
+        </div>
+        <p class="eyebrow">Arena offline</p>
+        <h1>Neon Strike 3D</h1>
+        <p class="menu-copy">Entre na campanha neon com ceu animado, mundos diferentes, pets melhores, loja de armas e Laser Rifle.</p>
+        <div class="menu-card-row">
+          <div class="mini-card"><strong>+2</strong><span>moedas por inimigo</span></div>
+          <div class="mini-card"><strong>+25</strong><span>moedas no chefao</span></div>
+          <div class="mini-card"><strong>109</strong><span>moedas no mundo 1</span></div>
+        </div>
+        <div class="menu-actions">
+          <button id="startButton" type="button">Comecar</button>
+          <button id="tutorialButton" class="secondary" type="button">Tutorial</button>
+          <button id="multiplayerButton" class="secondary" type="button">Multiplayer Online</button>
+          <button id="petShopButton" class="secondary" type="button">Loja</button>
+          <button id="menuSettingsButton" class="secondary" type="button">Configuracoes</button>
+        </div>
+        <small>Clique em Comecar para travar o mouse. T atira e Espaco pula.</small>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
